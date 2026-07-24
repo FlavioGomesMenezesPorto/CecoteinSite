@@ -104,6 +104,13 @@
             transform: scale(1.1);
         }
 
+        .icon-btn img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            display: block;
+        }
+
         .cart-badge {
             background-color: var(--amarelo);
             color: var(--preto);
@@ -531,15 +538,15 @@
                     <li><a href="#sobre">Sobre</a></li>
                     <li><a href="sustentabilidade.html">Sustentabilidade</a></li>
                     <li><a href="#contato">Contato</a></li>
+                    <li><a href="https://[REDACTED_DB_USERNAME].com.br/cprofissionais/principais/">Cprofissionais</a></li>
                 </ul>
             </nav>
             <div class="header-icons">
-                <button class="icon-btn">🔍</button>
-                <button class="icon-btn">👤</button>
-                <button class="icon-btn">
-                    🛒
-                    <span class="cart-badge">0</span>
-                </button>
+                <button class="icon-btn" aria-label="Pesquisar">🔍</button>
+                <button class="icon-btn" aria-label="Perfil">👤</button>
+                <a class="icon-btn" href="https://www.[REDACTED_DB_USERNAME].com.br/senha.php" aria-label="Acessar principais">
+                    <img src="assets/Simbolo_Downloads.png" alt="Ícone de download">
+                </a>
             </div>
         </div>
     </header>
