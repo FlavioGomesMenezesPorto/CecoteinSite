@@ -1,0 +1,441 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title> CProfissionais - Cadastro de Profissionais </title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script>        
+			var aAbas       = new Array();  // Lista de abas do documento atual
+			var sAbaAtiva   = ""            // Define qual é a aba ativa no momento
+			var ABA_ID      = 1
+			var ABA_BLOCO   = 2
+			var ABA_CAMPOS  = 3
+			
+			function defineAba( sId, sBloco )
+			{
+			   var aAba  = new Array( ABA_CAMPOS );
+			   aAba[ ABA_ID    ]  = sId;
+			   aAba[ ABA_BLOCO ]  = sBloco;
+			   aAbas.push( aAba );
+			}
+	
+			function defineAbaAtiva( sId )
+			{
+			   trataCliqueAba( sId );
+			}
+	
+			function trataMouseAba( oAba )
+			{
+			   oAba.style.cursor  = "pointer";
+			}
+	
+			function trataCliqueAba( sId )
+			{
+			   for ( var iAba  = 0; iAba < aAbas.length; iAba++ )
+			   {
+				  var aAba  = aAbas[ iAba ];
+				  if ( aAba[ ABA_ID ] == sId ) ativaAba( aAba );
+				  else inativaAba( aAba );
+			   }
+			}
+	
+			function ativaAba( aAba )
+			{
+			   var sAba       = aAba[ ABA_ID ];
+			   var oAba       = document.getElementById( sAba );
+			   mudaClasse( oAba, "abaativa" ); // Esse comando chama a classe css para fazer a troca
+	
+			   var sBlocoAba  = aAba[ ABA_BLOCO ];
+			   var oBlocoAba  = document.getElementById( sBlocoAba );
+			   oBlocoAba.style.display  = "block";
+			}
+	
+			function inativaAba( aAba )
+			{
+			   var sAba       = aAba[ ABA_ID ];
+			   var oAba       = document.getElementById( sAba );
+			   mudaClasse( oAba, "abainativa" ); // Esse comando chama a classe css para fazer a troca
+	
+			   var sBlocoAba  = aAba[ ABA_BLOCO ];
+			   var oBlocoAba  = document.getElementById( sBlocoAba );
+			   oBlocoAba.style.display  = "none";
+			}
+			
+			function mudaClasse( oObjeto, sClasse )
+			{
+			   oObjeto.className  = sClasse;
+			}
+        </script>
+		<link href="../estilos/cadastro.css" type="text/css" rel="stylesheet">
+		<script src="../js/cadastroprofissional.js"></script>
+        <script src="../funcoes/mascaras.js" ></script>
+	</head>	
+	<!-- #################################################################################### -->
+	<body>
+		<div class="principal">
+			 <div id="cabeca" >
+                <a href="http://www.cecotein.com.br"><img src="../imagens/Logo 1.png" width="900px" height="110px" alt="www.cecotein.com.br" title="www.cecotein.com.br" name="CProfissionais"></a> 
+            </div>
+            
+            <div id="flash" >
+                 <!--<object width="1500px" height="65px">
+                     <param name="movie" value="../Menu-emp.swf">
+                     <param name="wmode" value="transparent" />
+                     <embed wmode="transparent" src="../Menu-emp.swf" width="900px" height="60px" />
+                </object>-->
+                <?php
+					include ("../funcoes/menu-emp.html");
+				?>
+            </div>	
+            <?php
+			    session_start();
+				
+				if(isset($_COOKIE['pro']))
+					$id = $_COOKIE["pro"];
+				else
+					$id = 0;
+					
+				include '../funcoes/conecta.php';
+				include '../funcoes/funcoes.php';
+				
+				mysql_select_db(BASE,$cn)or die(mysql_error());
+				
+				$pesquisa = mysql_query("Select nome_pro from cadastro_profissionais where id_pro = '$id'");
+				$nome = mysql_fetch_row($pesquisa);
+				
+			?>
+            <div class="conteudo">
+            	<p align="right"><a href="javascript:history.back(1);"><input type="button" name="voltar" value="Voltar"></a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </p>
+                <form border="0" name="cadastroprofissional" action="../cadastro/cadastroprof.php" method="post" onsubmit="return verificacadprofissional(this);return verificacpf(this);" enctype="multipart/form-data">
+                    <table border="0">
+                        <tr>
+                            <td colspan="4"> <center> <img src="../imagens/cad_profissionais.png" width="450px" height="45px"></center> </td>
+                        </tr>
+                        <tr>
+                            <td> <label for="nome"> <font color="#FFFFFF"> Nome: </font> </label> </td>
+                            <td colspan="3"> <input type="text" maxlength="40" size="50" name="nome" onKeypress="return soletras();"> </td>
+                        </tr>
+                        <tr>
+                            <td> <label for="registro"> <font color="#FFFFFF"> Registro: </font> </label> </td>
+                            <td colspan="3"> <input type="text" maxlength="40" size="50" name="registro"> </td>
+                        </tr>
+                        <tr>
+                            <td> <label for="especialidade"> <font color="#FFFFFF"> Especialidade: </font> </label> </td>
+                            <td colspan="3"> <input type="text" maxlength="40" size="50" name="especialidade" onKeypress="return soletras();"> </td>
+                        </tr>
+            		    <tr>
+                            <td> <label for="categoria"> <font color="#FFFFFF"> Categoria: </font> </label> </td>
+                            <td colspan="3"> 
+                                <select name="categoria">
+                                	<option > Selecione uma categoria</option>
+                                    <option value="advogado"> Advogado </option>
+                                    <option value="dentista"> Dentista </option>
+                                    <option value="informatica"> Informática </option>
+                                    <option value="medico"> Médico </option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> <label for="cpf"> <font color="#FFFFFF"> CPF: </font> </label> </td>
+                            <td colspan="3"> <input type="text" maxlength="14" size="50" name="cpf" onKeypress="mascara(this, '###.###.###-##')"> </td>
+                        </tr>
+                        <tr>
+                            <td> <label for="nasc"> <font color="#FFFFFF"> Data Nascimento: </font> </label> </td>
+                            <td colspan="3"> <input type="text" maxlength="10" size="50" name="nasc" id="nasc" onKeypress="mascara(this, '##/##/####')" onBlur="TestaData1(this)"> </td>
+            			</tr>
+            			<tr>
+                            <td> <label for="endereco"> <font color="#FFFFFF"> Endereço: </font> </label> </td>
+                            <td colspan="3"> <input type="text" maxlength="40" size="50" name="endereco"> </td>
+                        </tr>
+                        <tr>
+                            <td> <label for="numero"> <font color="#FFFFFF"> Número: </font> </label> </td>
+                            <td> <input type="text" maxlength="8" size="5" name="numero" onKeypress="return sonumeros();"></td>
+                            <td> <label for="bairro"> <font color="#FFFFFF"> Bairro: </font> </label> </td>
+                            <td> <input type="text" maxlength="40" size="29" name="bairro"> </td>
+                        </tr>
+                        <tr>
+                            <td> <label for="cidade"> <font color="#FFFFFF"> Cidade: </font> </label> </td>
+                            <td colspan="3"> <input type="text" maxlength="40" size="50" name="cidade"> </td>
+                        </tr>
+                        <tr>
+                            <td> <label for="estado"> <font color="#FFFFFF"> Estado: </font> </label> </td>
+                            <td colspan="3"> <input type="text" maxlength="40" size="50" name="estado"> </td>
+                        </tr>
+                        <tr>
+                            <td> <label for="telefone"> <font color="#FFFFFF"> Telefone: </font> </label> </td>
+                            <td colspan="3"> <input type="text" maxlength="13" size="50" name="telefone" onKeypress="mascara_tel(this, '(##)####-####')"> </td>
+                        </tr>
+                        <tr>
+                        	<td> <label for="empresa"> <font color="#FFFFFF"> Empresa: </font> </label> </td>
+                            <td colspan="3"> <?php echo('<input type="text" name="empresa" size="50" value="'.$nome[0].'"> '); ?></td>
+                        </tr>
+                        <tr>
+                            <td> <label for="foto1"> <font color="#FFFFFF"> Foto: </font> </label> </td>
+                            <td colspan="3"> <input type="file" name="foto1"><!-- <input type="file" id="foto" name="foto"> --></td>
+                        </tr>
+                        <tr>
+                            <td> <label for="senha"> <font color="#FFFFFF"> Senha: </font> </label> </td>
+                            <td colspan="3"> <input type="password" maxlength="40" size="50" name="senha"> </td>
+                        </tr>
+                        <tr>
+                            <td> <label for="senha"> <font color="#FFFFFF"> Confirma senha: </font> </label> </td>
+                            <td colspan="3"> <input type="password" maxlength="40" size="50" name="conf_senha"> </td>
+                        </tr>
+                        <tr> 
+                        	<td> <label for="observacao"> <font color="#FFFFFF"> Observações (Informações do currículo): </font> </label> </td>
+                            <td colspan="3"> <textarea rows="8" cols="52" name="obs" id="obs" style="font-family:Arial;"> </textarea> </td>
+                        </tr>
+                        <tr>
+                        	<!-- Criação das abas -->
+                        	<table width="50%" border="0" cellpadding="0" cellspacing="1">
+                                <tr>
+                                    <td width="10%" height="36" align="center" valign="middle" class="abaativa" id="celAbaManha" onClick="trataCliqueAba( this.id );" onMouseOver="trataMouseAba( this );"> Manhã </td>
+                                    
+                                    <td id="celAbaTarde" align="center" valign="middle" width="10%" class="abainativa" onMouseOver="trataMouseAba( this );" onClick="trataCliqueAba( this.id );"> Tarde </td>
+                                    
+                                    <td id="celAbaNoite" align="center" valign="middle" width="10%" class="abainativa" onMouseOver="trataMouseAba( this );" onClick="trataCliqueAba( this.id );"> Noite </td>
+                                    
+                                    <td id="celAbaMadrugada" align="center" valign="middle" width="10%" class="abainativa" onMouseOver="trataMouseAba( this );" onClick="trataCliqueAba( this.id );"> Madrugada </td>
+                                </tr>
+                        	</table>
+                            <br>
+                            <!-- Criação o conteúdo da aba manhã -->
+                           <div id="Manha" style="display: block">
+                                <table border="0" width="50%">
+                                    <tr>
+                                        <td align="center"> <font color="#20B2AA"> <b>Dias da semana </b> </font> </td>
+                                        <td align="center"> <font color="#20B2AA"> <b>De: </b> </font> </td>
+                                        <td align="center"> <font color="#20B2AA"> <b>Até: </b></font></td>
+                                        <td align="center"> <font color="#20B2AA"> <b>Período: </b> </font></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Segunda-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_seg_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_seg_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_seg_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Terça-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_ter_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_ter_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_ter_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Quarta-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_qua_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_qua_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_qua_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Quinta-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_qui_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_qui_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_qui_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Sexta-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_sex_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_sex_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_sex_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Sábado: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_sab_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_sab_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_sab_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Domingo: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_dom_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_dom_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="man_dom_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                              </table>
+                            </div> <!-- Fecha a div Manha -->
+                            <div id="Tarde" style="display: none">
+                            <!-- Criação do conteudo da div Tarde -->
+                                <table border="0" width="50%">
+                                    <tr>
+                                        <td align="center"> <font color="#20B2AA"> <b> Dias da semana </b> </font> </td>
+                                        <td align="center"> <font color="#20B2AA"> <b> De: </b> </font> </td>
+                                        <td align="center"> <font color="#20B2AA"> <b> Até: </b></font></td>
+                                        <td align="center"> <font color="#20B2AA"> <b> Período: </b> </font></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Segunda-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_seg_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_seg_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_seg_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Terça-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_ter_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_ter_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_ter_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Quarta-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_qua_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_qua_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_qua_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Quinta-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_qui_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_qui_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_qui_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Sexta-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_sex_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_sex_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_sex_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Sábado: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_sab_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_sab_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_sab_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Domingo: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_dom_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_dom_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="tar_dom_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                              </table>
+                            </div> <!-- Fecha a div Tarde -->
+                             <div id="Noite" style="display: none">
+                             <!-- Criação da div Noite -->
+                                <table border="0" width="50%">
+                                    <tr>
+                                        <td align="center"> <font color="#20B2AA"> <b> Dias da semana </b> </font> </td>
+                                        <td align="center"> <font color="#20B2AA"> <b> De: </b> </font> </td>
+                                        <td align="center"> <font color="#20B2AA"> <b> Até: </b></font></td>
+                                        <td align="center"> <font color="#20B2AA"> <b> Período: </b> </font></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Segunda-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_seg_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_seg_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_seg_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Terça-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_ter_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_ter_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_ter_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Quarta-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_qua_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_qua_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_qua_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Quinta-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_qui_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_qui_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_qui_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Sexta-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_sex_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_sex_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_sex_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Sábado: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_sab_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_sab_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_sab_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Domingo: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_dom_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_dom_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="noi_dom_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                              </table>
+                            </div> <!-- Fecha a div Noite -->
+                            <div id="Madrugada" style="display: none">
+                            <!-- Criação do conteudo da div Madrugada -->
+                                <table border="0" width="50%">
+                                    <tr>
+                                        <td align="center"> <font color="#20B2AA"> <b> Dias da semana </b> </font> </td>
+                                        <td align="center"> <font color="#20B2AA"> <b> De: </b> </font> </td>
+                                        <td align="center"> <font color="#20B2AA"> <b> Até: </b></font></td>
+                                        <td align="center"> <font color="#20B2AA"> <b> Período: </b> </font></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Segunda-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8" name="mad_seg_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_seg_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_seg_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Terça-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_ter_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_ter_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_ter_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Quarta-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_qua_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_qua_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_qua_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Quinta-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_qui_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_qui_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_qui_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Sexta-feira: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_sex_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_sex_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_sex_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Sábado: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_sab_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_sab_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_sab_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                                    <tr> 
+                                    	<td align="center"> <font color="#FFFFFF"> Domingo: </font> </td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_dom_de" title="Hora de início do período" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_dom_ate" title="Hora de término" size="7"></td>
+                                        <td> <input onKeypress="mascara(this, '##:##:##')" maxlength="8"name="mad_dom_tem" title="De quanto em quanto tempo será criado o compromisso" size="10"></td>
+                                    </tr>
+                              </table>
+                            </div> <!-- Fecha a div Madrugada -->
+                        </tr>
+                        <tr>
+                            <td colspan="5" align="left"> <input type="checkbox" name="checke" id="checke" title="Mostrar grade aos clientes" > Mostrar a grade de horários aos clientes 
+                            </td>
+                         </tr>
+                         <tr>
+                         	<br>
+                            <td colspan="4"> 
+                            	<center>
+                                		<br><br>
+                                        <input type="submit" name="Cadastrar" value="Cadastrar">
+                                        <input type="reset" name="apagar" value="Apagar">
+                                        
+                                </center>
+                            </td>
+                        </tr>
+                	</table>
+				</form>
+            </div> <!-- Fecha a div Conteudo -->
+		</div> <!-- Fecha a div Principal -->
+        <script>
+            defineAba( "celAbaManha"  , "Manha"   );
+            defineAba( "celAbaTarde" , "Tarde"  );
+            defineAba( "celAbaNoite" , "Noite"   );
+            defineAba( "celAbaMadrugada", "Madrugada"     );
+            defineAbaAtiva( "celAbaManha" );
+        </script>
+	</body>
+</html>
