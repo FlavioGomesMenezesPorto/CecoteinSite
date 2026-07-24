@@ -50,6 +50,13 @@
             gap: 10px;
         }
 
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
         .logo img {
             height: 50px;
             width: auto;
@@ -95,6 +102,13 @@
 
         .icon-btn:hover {
             transform: scale(1.1);
+        }
+
+        .icon-btn img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            display: block;
         }
 
         .cart-badge {
@@ -513,8 +527,10 @@
     <header>
         <div class="header-container">
             <div class="logo">
-                <img src="assets/[REDACTED_DB_USERNAME]_logo01.png" alt="Cecotein Logo">
-                <span class="logo-text">[REDACTED_DOWNLOAD_USERNAME]</span>
+                <a href="index.html" aria-label="Ir para a página inicial">
+                    <img src="assets/[REDACTED_DB_USERNAME]_logo01.png" alt="Cecotein Logo">
+                    <span class="logo-text">[REDACTED_DOWNLOAD_USERNAME]</span>
+                </a>
             </div>
             <nav>
                 <ul>
@@ -522,15 +538,15 @@
                     <li><a href="#sobre">Sobre</a></li>
                     <li><a href="sustentabilidade.html">Sustentabilidade</a></li>
                     <li><a href="#contato">Contato</a></li>
+                    <li><a href="https://[REDACTED_DB_USERNAME].com.br/cprofissionais/principais/">Cprofissionais</a></li>
                 </ul>
             </nav>
             <div class="header-icons">
-                <button class="icon-btn">🔍</button>
-                <button class="icon-btn">👤</button>
-                <button class="icon-btn">
-                    🛒
-                    <span class="cart-badge">0</span>
-                </button>
+                <button class="icon-btn" aria-label="Pesquisar">🔍</button>
+                <button class="icon-btn" aria-label="Perfil">👤</button>
+                <a class="icon-btn" href="https://www.[REDACTED_DB_USERNAME].com.br/senha.php" aria-label="Acessar principais">
+                    <img src="assets/Simbolo_Downloads.png" alt="Ícone de download">
+                </a>
             </div>
         </div>
     </header>
