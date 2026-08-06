@@ -542,8 +542,6 @@
                 </ul>
             </nav>
             <div class="header-icons">
-                <button class="icon-btn" aria-label="Pesquisar">🔍</button>
-                <button class="icon-btn" aria-label="Perfil">👤</button>
                 <a class="icon-btn" href="https://www.[REDACTED_DB_USERNAME].com.br/senha.php" aria-label="Acessar principais">
                     <img src="assets/Simbolo_Downloads.png" alt="Ícone de download">
                 </a>
@@ -556,7 +554,7 @@
         <div class="hero-content">
             <h1>Cecotein</h1>
             <p><strong>Seu Shopping de Informática</strong></p>
-            <p>As melhores soluções em tecnologia para você e sua empresa. Notebooks, desktops, periféricos e muito mais!</p>
+            <p>As melhores soluções em tecnologia para você e sua empresa. De Softwares Especificos a Notebooks, desktops, periféricos e muito mais!</p>
             <div class="hero-buttons">
                 <a href="#sobre" class="btn btn-primary">Saiba Mais</a>
                 <a href="#contato" class="btn btn-secondary">Fale Conosco</a>
@@ -582,12 +580,8 @@
                 
                 <div class="stats-container">
                     <div class="stat-box">
-                        <div class="stat-number">40+</div>
+                        <div class="stat-number">45+</div>
                         <div class="stat-label">Anos de Experiência</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-number">50k+</div>
-                        <div class="stat-label">Clientes Satisfeitos</div>
                     </div>
                 </div>
             </div>
@@ -650,25 +644,33 @@
         <p class="contato-subtitle">Faça nos uma visita ou entre em contato que vamos até você!</p>
 
         <div class="contato-container">
-            <form id="contactForm">
+            <form id="contactForm" action="contato_envia.php" method="post">
                 <div class="form-group">
                     <label for="nome">Nome</label>
-                    <input type="text" id="nome" placeholder="Seu nome" required>
+                    <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="seu@email.com" required>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" required>
                 </div>
                 <div class="form-group">
                     <label for="telefone">Telefone (opcional)</label>
-                    <input type="tel" id="telefone" placeholder="(34) 9999-9999">
+                    <input type="tel" id="telefone" name="telefone" placeholder="(34) 9999-9999">
                 </div>
                 <div class="form-group">
                     <label for="mensagem">Mensagem</label>
-                    <textarea id="mensagem" placeholder="Como podemos ajudar?" required></textarea>
+                    <textarea id="mensagem" name="mensagem" placeholder="Como podemos ajudar?" required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Enviar Mensagem</button>
             </form>
+
+            <div id="contactModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); align-items:center; justify-content:center; z-index:9999; padding:20px;">
+                <div style="background:#fff; max-width:420px; width:100%; border-radius:10px; padding:24px; box-shadow:0 12px 30px rgba(0,0,0,0.2); text-align:center;">
+                    <h3 id="contactModalTitle" style="margin-top:0; color:#0b5fff;">Mensagem enviada</h3>
+                    <p id="contactModalText" style="line-height:1.5; margin-bottom:20px;">Sua mensagem foi enviada com sucesso.</p>
+                    <button id="contactModalClose" type="button" class="btn btn-primary">Fechar</button>
+                </div>
+            </div>
 
             <div>
                 <div class="info-item">
@@ -746,7 +748,7 @@
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; 2024 Cecotein - Todos os direitos reservados.</p>
+            <p>&copy; 2026 Cecotein - Todos os direitos reservados.</p>
         </div>
     </footer>
 
@@ -765,22 +767,67 @@
             });
         });
 
-        // Form submission
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const nome = document.getElementById('nome').value;
-            const email = document.getElementById('email').value;
-            const telefone = document.getElementById('telefone').value;
-            const mensagem = document.getElementById('mensagem').value;
-            
-            const assunto = `Contato de ${nome}`;
-            const corpo = `Nome: ${nome}\nEmail: ${email}\nTelefone: ${telefone}\n\nMensagem:\n${mensagem}`;
-            
-            window.location.href = `mailto:[REDACTED_DB_USERNAME]@[REDACTED_DB_USERNAME].com.br?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
-            
-            this.reset();
+        const form = document.getElementById('contactForm');
+        const modal = document.getElementById('contactModal');
+        const modalTitle = document.getElementById('contactModalTitle');
+        const modalText = document.getElementById('contactModalText');
+        const modalClose = document.getElementById('contactModalClose');
+
+        function showContactModal(title, message) {
+            modalTitle.textContent = title;
+            modalText.textContent = message;
+            modal.style.display = 'flex';
+        }
+
+        modalClose.addEventListener('click', function () {
+            modal.style.display = 'none';
         });
+
+        modal.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        if (form) {
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalText = submitButton.textContent;
+                submitButton.disabled = true;
+                submitButton.textContent = 'Enviando...';
+
+                try {
+                    const response = await fetch(this.action, {
+                        method: 'POST',
+                        body: new FormData(this)
+                    });
+
+                    const text = await response.text();
+                    let result = null;
+
+                    try {
+                        result = JSON.parse(text);
+                    } catch (parseError) {
+                        showContactModal('Falha no envio', `Erro de servidor: ${text}`);
+                        return;
+                    }
+
+                    if (response.ok && result.success) {
+                        showContactModal('Mensagem enviada', result.message);
+                        this.reset();
+                    } else {
+                        showContactModal('Falha no envio', result.message || 'Erro desconhecido.');
+                    }
+                } catch (error) {
+                    showContactModal('Falha no envio', 'Não foi possível enviar a mensagem. Tente novamente mais tarde.');
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                }
+            });
+        }
     </script>
 </body>
 </html>
