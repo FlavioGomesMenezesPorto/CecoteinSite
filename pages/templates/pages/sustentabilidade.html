@@ -1,0 +1,298 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cecotein - Sustentabilidade</title>
+    <link rel="icon" href="{% static '[REDACTED_DB_USERNAME]_logo01.png' %}" type="image/png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --amarelo: #FFD60A;
+            --preto: #1a1a1a;
+            --cinza-escuro: #2d3748;
+            --cinza-claro: #f7f7f7;
+            --branco: #ffffff;
+            --verde-musgo: #3f7d2a;
+            --verde-escuro: #18381a;
+            --verde-claro: #7bbd3f;
+            --verde-agua: #d9f1b3;
+            --fundo-principal: #1a3a31;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #22351a;
+            background: linear-gradient(135deg, #f4f4ea 0%, #ebf2db 100%);
+        }
+
+        header {
+            background-color: #1a3a31;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f6fff1;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #f6fff1;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #d8ff79;
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+        }
+
+        .sustainability-shell {
+            position: relative;
+            padding: 36px;
+            background-color: var(--fundo-principal);
+            background-image:
+                linear-gradient(135deg, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 45%, rgba(0, 0, 0, 0.14) 100%),
+                url('{% static "Fundo_Sustentabilidade01.png" %}');
+            background-position: center;
+            background-size: cover;
+            background-blend-mode: normal;
+            background-attachment: scroll;
+            overflow: hidden;
+            box-shadow: none;
+            border: 2px solid #1a3a31;
+            border-radius: 18px;
+        }
+
+        .accent-bar {
+            height: 7px;
+            border-radius: 999px;
+            margin-bottom: 22px;
+            background: linear-gradient(90deg, #d8ff79 0%, #4ebd57 45%, #0d3b2a 100%);
+            background-size: 220% 100%;
+            animation: flow-bar 3.2s linear infinite;
+            box-shadow: 0 0 18px rgba(216, 255, 121, 0.35);
+        }
+
+        .intro {
+            margin-bottom: 28px;
+        }
+
+        .intro h1 {
+            font-size: 42px;
+            color: #ffffff;
+            margin-bottom: 12px;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.45);
+        }
+
+        .intro p {
+            font-size: 19px;
+            color: #f5ffea;
+            max-width: 780px;
+            font-weight: 600;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.25);
+        }
+
+        .panel {
+            background: rgba(0, 0, 0, 0.22);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 16px;
+            padding: 26px 28px;
+            margin-bottom: 28px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+
+        .panel p {
+            font-size: 18px;
+            color: #ffffff;
+            line-height: 1.9;
+            margin-bottom: 12px;
+            font-weight: 600;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+        }
+
+        .panel p:last-child {
+            margin-bottom: 0;
+        }
+
+        .partners {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .partner-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            padding: 22px 24px;
+            background: rgba(0, 0, 0, 0.23);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 16px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+
+        .partner-card h2 {
+            font-size: 22px;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.25);
+        }
+
+        .partner-card p {
+            font-size: 16px;
+            color: #f5ffea;
+            line-height: 1.7;
+            font-weight: 600;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .partner-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 110px;
+            text-decoration: none;
+        }
+
+        .partner-link img {
+            max-width: 100%;
+            max-height: 72px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .partner-link:hover img {
+            transform: scale(1.03);
+            transition: transform 0.2s ease;
+        }
+
+        @keyframes flow-bar {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 200% 50%;
+            }
+        }
+
+        @media (max-width: 860px) {
+            .partner-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <a href="{% url 'pages:home' %}" aria-label="Ir para a página inicial">
+                    <img src="{% static '[REDACTED_DB_USERNAME]_logo01.png' %}" alt="Cecotein Logo">
+                    <span class="logo-text">[REDACTED_DOWNLOAD_USERNAME]</span>
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'pages:home' %}">Início</a></li>
+                    <li><a href="{% url 'pages:home' %}#sobre">Sobre</a></li>
+                    <li><a href="{% url 'pages:sustentabilidade' %}">Sustentabilidade</a></li>
+                    <li><a href="{% url 'pages:home' %}#contato">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page">
+        <section class="sustainability-shell">
+            <div class="accent-bar"></div>
+            <div class="intro">
+                <h1>Sustentabilidade</h1>
+                <p>A [REDACTED_DOWNLOAD_USERNAME] incorpora práticas de responsabilidade ambiental em diferentes etapas de sua operação, buscando reduzir desperdícios e fortalecer ações que gerem mais consciência no uso de recursos.</p>
+            </div>
+
+            <div class="panel">
+                <p>A empresa valoriza soluções simples e eficientes no dia a dia, como o uso de folhas de rascunho para anotações ou impressões nas costas, o recolhimento de pilhas e baterias usadas para descarte adequado e o recolhimento de equipamentos eletrônicos queimados, como telefones, monitores, rádios, computadores, impressoras, estabilizadores, videogames e televisores, que são destinados à reciclagem.</p>
+                <p>Além disso, a [REDACTED_DOWNLOAD_USERNAME] também investe em mobilidade mais limpa com um carro 100% elétrico, utilizado para atendimento a clientes, o que contribui para reduzir a emissão de cerca de 40 toneladas de CO₂ na atmosfera. A companhia ainda atua no campo da energia renovável com placas fotovoltaicas e busca ampliar sua presença em projetos com menor impacto ambiental, incluindo iniciativas alinhadas à construção de residências com materiais sustentáveis.</p>
+            </div>
+
+            <div class="partners">
+                <article class="partner-card">
+                    <div>
+                        <h2>Conheça a iniciativa Electro</h2>
+                        <p>O Electro é um sistema inovador de conversão de carros convencionais para motor elétrico, oferecendo uma solução durável, confiável e de baixo consumo energético, com operação limpa e menor impacto ambiental.</p>
+                    </div>
+                    <a class="partner-link" href="http://electro.net.br/" target="_blank" rel="noopener noreferrer" aria-label="Visitar Electro">
+                        <img src="{% static 'electro_logo01.png' %}" alt="Logo da Electro">
+                    </a>
+                </article>
+
+                <article class="partner-card">
+                    <div>
+                        <h2>Conheça a Futhouse</h2>
+                        <p>Uma marca que transforma conceitos de construção em soluções mais alinhadas à sustentabilidade e à eficiência.</p>
+                    </div>
+                    <a class="partner-link" href="https://www.futhouse.com.br/" target="_blank" rel="noopener noreferrer" aria-label="Visitar Futhouse">
+                        <img src="{% static 'futhouse_logo01.png' %}" alt="Logo da Futhouse">
+                    </a>
+                </article>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
